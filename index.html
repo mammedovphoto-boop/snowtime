@@ -418,9 +418,9 @@ comp.props = {};
 comp.state = comp.state || {};
 comp.setState = function (patch) { Object.assign(this.state, patch); render(); };
 const tpls = [...document.querySelectorAll('template[data-for]')].map((t) => {
-  const host = document.createElement('div');
-  host.style.display = 'contents';
-  t.parentNode.insertBefore(host, t);
+  let host;
+  if (t.parentNode.tagName === 'TBODY') { host = t.parentNode; t.remove(); }
+  else { host = document.createElement('div'); host.style.display = 'contents'; t.parentNode.insertBefore(host, t); }
   return { t, host, list: t.dataset.for, as: t.dataset.as, last: '' };
 });
 function fill(html, as, item) {
