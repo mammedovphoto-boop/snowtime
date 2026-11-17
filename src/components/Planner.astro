@@ -142,8 +142,15 @@ const extras = ['Трансфер из аэропорта', 'Прокат сна
         'Заявка с сайта snowtime.ge',
       ].filter(Boolean);
       window.track('form_submit', { form: 'planner', kind });
-      done.textContent = 'Открываем WhatsApp с вашей заявкой. Если окно не открылось, напишите нам на ' + '+' + form.dataset.phone + '.';
-      window.open(`https://wa.me/${form.dataset.phone}?text=${encodeURIComponent(lines.join('\n'))}`, '_blank', 'noopener');
+      const url = `https://wa.me/${form.dataset.phone}?text=${encodeURIComponent(lines.join('\n'))}`;
+      // Ссылка показывается всегда: в части браузеров автоматическое открытие окна запрещено.
+      done.innerHTML = '';
+      const msg = document.createElement('span');
+      msg.textContent = 'Заявка готова. Если WhatsApp не открылся сам, нажмите: ';
+      const a = document.createElement('a');
+      a.href = url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'открыть WhatsApp';
+      done.append(msg, a);
+      try { window.open(url, '_blank', 'noopener'); } catch {}
     });
     show(0);
   }
@@ -173,6 +180,7 @@ const extras = ['Трансфер из аэропорта', 'Прокат сна
   .hint { font-size: var(--step--1); color: var(--stone-light); }
   .planner-nav { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: flex-end; }
   .planner-nav [hidden] { display: none; }
-  .done { min-height: 1.5em; font-size: var(--step--1); color: var(--glacier); }
+  .done { min-height: 1.5em; font-size: 0.9375rem; color: var(--snow); }
+  .done :global(a) { color: var(--glacier); font-weight: 700; }
   @media (max-width: 900px) { .planner-grid { grid-template-columns: 1fr; } .planner header { position: static; } }
 </style>
